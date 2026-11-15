@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    color-scheme: light only;
+  }
+
+  body {
+    font-family: "DM Sans", system-ui, -apple-system, sans-serif;
+    background-color: #F9F0E0;
+    color: #806b43;
+    overflow-x: hidden;
+  }
+}
+
+.gld-cinzel {
+  font-family: "Cinzel", Georgia, serif;
+}
+
+.gld-script {
+  font-family: "Cookie", cursive;
+}
+
+.font-arabic {
+  font-family: "Amiri", serif;
+}
+
+@keyframes sweep-shine {
+  0% {
+    transform: translateX(-160%) skewX(-20deg);
+  }
+  25% {
+    transform: translateX(180%) skewX(-20deg);
+  }
+  100% {
+    transform: translateX(180%) skewX(-20deg);
+  }
+}
+
+.scratch-shine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 248, 225, 0.72) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: sweep-shine 3.8s infinite ease-in-out;
+  pointer-events: none;
+  z-index: 15;
+}
+
+@keyframes gentle-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.animate-gentle-float {
+  animation: gentle-float 5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scratch-shine,
+  .animate-gentle-float {
+    animation: none;
+  }
+}
