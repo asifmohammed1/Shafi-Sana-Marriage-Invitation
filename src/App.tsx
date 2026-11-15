@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import {
   BedDouble,
@@ -17,32 +17,6 @@ import { HeartScratchCard } from './components/HeartScratchCard';
 import { PreWeddingTimeline } from './components/PreWeddingTimeline';
 import { WeddingTimeline } from './components/WeddingTimeline';
 import { RsvpSection } from './components/RsvpSection';
-
-interface TimeLeft {
-  days: number;
-  hours: number;
-  minutes: number;
-  seconds: number;
-}
-
-function FlipDigit({ value }: { value: number }) {
-  return (
-    <div className="relative overflow-hidden h-[50px] md:h-[60px] flex items-center justify-center min-w-[55px] md:min-w-[70px]">
-      <AnimatePresence mode="popLayout">
-        <motion.span
-          key={value}
-          initial={{ y: '100%', opacity: 0 }}
-          animate={{ y: '0%', opacity: 1 }}
-          exit={{ y: '-100%', opacity: 0 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          className="absolute gld-cinzel text-4xl md:text-5xl text-[#806b43] font-medium tabular-nums"
-        >
-          {value.toString().padStart(2, '0')}
-        </motion.span>
-      </AnimatePresence>
-    </div>
-  );
-}
 
 function SectionBlock({
   children,
@@ -73,41 +47,15 @@ export default function App() {
     isOpen: isOpened,
   });
 
-  const [timeLeft, setTimeLeft] = useState<TimeLeft>({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
-
-  useEffect(() => {
-    const targetMs = new Date(`${data.eventDate}T18:00:00`).getTime();
-
-    const updateCountdown = () => {
-      const diff = targetMs - Date.now();
-      if (diff <= 0) {
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-        return;
-      }
-      setTimeLeft({
-        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((diff / (1000 * 60)) % 60),
-        seconds: Math.floor((diff / 1000) % 60),
-      });
-    };
-
-    updateCountdown();
-    const timer = window.setInterval(updateCountdown, 1000);
-    return () => window.clearInterval(timer);
-  }, [data.eventDate]);
-
   const calendarParts = getCalendarParts(data.eventDate);
   const firstPerson = data.swapNames ? data.brideName : data.groomName;
+  const secondPerson = data.swapNames ? data.groomName : data.brideName;
+
+  const firstFormalName = data.swapNames ? data.brideFormalName : data.groomFormalName;
   const firstGuardian = data.swapNames ? data.brideGuardianText : data.groomGuardianText;
   const firstParents = data.swapNames ? data.brideParents : data.groomParents;
 
-  const secondPerson = data.swapNames ? data.groomName : data.brideName;
+  const secondFormalName = data.swapNames ? data.groomFormalName : data.brideFormalName;
   const secondGuardian = data.swapNames ? data.groomGuardianText : data.brideGuardianText;
   const secondParents = data.swapNames ? data.groomParents : data.brideParents;
 
@@ -179,7 +127,7 @@ export default function App() {
             )}
           </button>
 
-          {/* 1. Hero Section with CoupleHeroStyleBackgroundVideo */}
+          {/* 1. Hero Section */}
           <section
             id="eternal-duas-main"
             style={{ colorScheme: 'only light' }}
@@ -333,59 +281,7 @@ export default function App() {
             </motion.div>
           </SectionBlock>
 
-          {/* 4. Countdown Timer */}
-          <SectionBlock>
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              className="max-w-4xl mx-auto text-center flex flex-col items-center"
-            >
-              <h2 className="gld-script text-[40px] md:text-[46px] text-center text-[#806b43] mb-1">
-                {data.countdownTitle}
-              </h2>
-              <div className="flex justify-center mb-6 w-full">
-                <img
-                  src={data.assets.divider}
-                  alt="divider"
-                  className="h-[20px] md:h-[25px] object-contain opacity-90 drop-shadow-sm"
-                />
-              </div>
-              <div className="flex flex-col items-center mb-8">
-                <div className="flex items-center justify-center text-[#806b43]">
-                  <div className="flex flex-col items-center">
-                    <FlipDigit value={timeLeft.days} />
-                    <span className="font-sans text-[14px] md:text-[16px] text-[#806b43] -mt-1">
-                      Days
-                    </span>
-                  </div>
-                  <span className="mx-2 md:mx-4 mb-8 gld-cinzel text-3xl md:text-4xl">:</span>
-                  <div className="flex flex-col items-center">
-                    <FlipDigit value={timeLeft.hours} />
-                    <span className="font-sans text-[14px] md:text-[16px] text-[#806b43] -mt-1">
-                      Hours
-                    </span>
-                  </div>
-                  <span className="mx-2 md:mx-4 mb-8 gld-cinzel text-3xl md:text-4xl">:</span>
-                  <div className="flex flex-col items-center">
-                    <FlipDigit value={timeLeft.minutes} />
-                    <span className="font-sans text-[14px] md:text-[16px] text-[#806b43] -mt-1">
-                      Minutes
-                    </span>
-                  </div>
-                  <span className="mx-2 md:mx-4 mb-8 gld-cinzel text-3xl md:text-4xl">:</span>
-                  <div className="flex flex-col items-center">
-                    <FlipDigit value={timeLeft.seconds} />
-                    <span className="font-sans text-[14px] md:text-[16px] text-[#806b43] -mt-1">
-                      Seconds
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </SectionBlock>
-
-          {/* 5. Formal Golden Arch Invitation Card */}
+          {/* 4. Formal Golden Arch Invitation Card */}
           <section className="relative flex flex-col items-center bg-[#F9F0E0] text-[#806b43] w-full py-10 md:py-12 overflow-hidden">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -438,7 +334,7 @@ export default function App() {
                   </div>
 
                   <h3 className="gld-script text-[32px] sm:text-[36px] md:text-[40px] text-[#806b43] mt-1 sm:mt-2 mb-0 leading-tight drop-shadow-sm">
-                    {firstPerson}
+                    {firstFormalName}
                   </h3>
                   <img
                     src={data.assets.divider}
@@ -457,7 +353,7 @@ export default function App() {
                   </p>
 
                   <h3 className="gld-script text-[32px] sm:text-[36px] md:text-[40px] text-[#806b43] mb-0 leading-tight drop-shadow-sm">
-                    {secondPerson}
+                    {secondFormalName}
                   </h3>
                   <img
                     src={data.assets.divider}
@@ -482,7 +378,7 @@ export default function App() {
             </motion.div>
           </section>
 
-          {/* 6. Interactive Heart Scratch-Off Reveal */}
+          {/* 5. Interactive Heart Scratch-Off Reveal */}
           <SectionBlock>
             <motion.div
               initial={{ opacity: 0 }}
@@ -508,7 +404,7 @@ export default function App() {
             </motion.div>
           </SectionBlock>
 
-          {/* 7 & 8. Pre-Wedding Events + Wedding Timeline */}
+          {/* 6 & 7. Pre-Wedding Events + Wedding Timeline */}
           <SectionBlock>
             <PreWeddingTimeline
               title={data.preWeddingTitle}
@@ -523,7 +419,7 @@ export default function App() {
             />
           </SectionBlock>
 
-          {/* 9. The Venue */}
+          {/* 8. Primary Venue (Nikah: Laxmi Bavani Gardens) */}
           <SectionBlock>
             <motion.div
               initial={{ opacity: 0 }}
@@ -543,11 +439,11 @@ export default function App() {
               </div>
 
               <div className="mb-8 flex flex-col items-center">
-                <h3 className="gld-cinzel font-bold text-2xl md:text-3xl tracking-widest text-[#806b43] mb-4">
+                <h3 className="gld-cinzel font-bold text-2xl md:text-3xl tracking-widest text-[#806b43] mb-2">
                   {data.venueName}
                 </h3>
-                <p className="font-sans text-sm md:text-[15px] text-[#806b43]/90 max-w-[280px] mx-auto leading-relaxed">
-                  {data.venueAddress}
+                <p className="font-sans text-xs md:text-sm text-[#806b43]/80 tracking-wide">
+                  Sunday, 03 Jan 2027 · 02:00 PM
                 </p>
               </div>
 
@@ -555,12 +451,12 @@ export default function App() {
                 <div className="w-full aspect-[4/3] rounded-[24px] border-[2px] border-[#806b43]/50 overflow-hidden relative z-10 shadow-sm bg-[#F9F0E0]">
                   <iframe
                     src={`https://maps.google.com/maps?q=${encodeURIComponent(
-                      `${data.venueName} ${data.venueAddress}`
+                      data.venueName
                     )}&t=&z=14&ie=UTF8&iwloc=&output=embed`}
                     style={{ border: 0 }}
                     allowFullScreen
                     loading="lazy"
-                    title="Venue Map Preview"
+                    title="Nikah Venue Map Preview"
                     className="w-full h-full"
                   />
                 </div>
@@ -587,6 +483,70 @@ export default function App() {
               </a>
             </motion.div>
           </SectionBlock>
+
+          {/* 9. Secondary Venue (Valima: Taj Convention) */}
+          {data.useSecondaryMap && (
+            <SectionBlock>
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                className="w-full flex flex-col items-center text-center"
+              >
+                <h2 className="gld-script text-[40px] md:text-[46px] text-center text-[#806b43] mb-1">
+                  {data.secondaryMapTitle}
+                </h2>
+                <div className="flex justify-center mb-8 w-full">
+                  <img
+                    src={data.assets.divider}
+                    alt="divider"
+                    className="h-[20px] md:h-[25px] object-contain opacity-90 drop-shadow-sm"
+                  />
+                </div>
+
+                <div className="mb-8 flex flex-col items-center">
+                  <h3 className="gld-cinzel font-bold text-2xl md:text-3xl tracking-widest text-[#806b43] mb-2">
+                    {data.secondaryMapVenueName}
+                  </h3>
+                </div>
+
+                <div className="w-full max-w-[90%] md:max-w-md relative mb-12">
+                  <div className="w-full aspect-[4/3] rounded-[24px] border-[2px] border-[#806b43]/50 overflow-hidden relative z-10 shadow-sm bg-[#F9F0E0]">
+                    <iframe
+                      src={`https://maps.google.com/maps?q=${encodeURIComponent(
+                        data.secondaryMapVenueName
+                      )}&t=&z=14&ie=UTF8&iwloc=&output=embed`}
+                      style={{ border: 0 }}
+                      allowFullScreen
+                      loading="lazy"
+                      title="Valima Venue Map Preview"
+                      className="w-full h-full"
+                    />
+                  </div>
+                  <img
+                    src={data.assets.cardBorder}
+                    alt="border top"
+                    className="absolute -top-[34px] left-1/2 -translate-x-1/2 w-[55%] h-auto object-contain z-20 pointer-events-none"
+                  />
+                  <img
+                    src={data.assets.cardBorder}
+                    alt="border bottom"
+                    className="absolute -bottom-[34px] left-1/2 -translate-x-1/2 w-[55%] h-auto object-contain z-20 pointer-events-none rotate-180"
+                  />
+                </div>
+
+                <a
+                  href={data.secondaryMapLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center justify-center gap-3 w-full max-w-[250px] py-4 border border-[#806b43] text-[#F9F0E0] bg-[#806b43] hover:bg-transparent hover:text-[#806b43] transition-colors gld-cinzel text-[13px] uppercase tracking-widest shadow-md"
+                >
+                  <MapPin className="w-4 h-4" />
+                  <span>Get Directions</span>
+                </a>
+              </motion.div>
+            </SectionBlock>
+          )}
 
           {/* 10. Guest Logistics */}
           <SectionBlock>
@@ -660,6 +620,8 @@ export default function App() {
               mainEventDate={data.eventDate}
               mainEventTime={data.eventTime}
               mainEventVenue={data.venueName}
+              secondaryEventTitle={data.secondaryMapTitle}
+              secondaryEventVenue={data.secondaryMapVenueName}
               preWeddingEvents={data.preWeddingEvents}
               initialCount={data.initialRsvpCount}
             />
@@ -691,29 +653,12 @@ export default function App() {
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
-                className="pt-16 flex flex-col items-center gap-4 relative z-10 w-full"
+                className="pt-14 flex flex-col items-center gap-4 relative z-10 w-full"
               >
-                <div className="h-px w-12 bg-[#806b43]/30 animate-pulse" />
-                <div className="flex items-center gap-3 group cursor-pointer">
-                  <span className="font-sans text-[8px] tracking-[0.4em] uppercase text-[#806b43]/50 group-hover:text-[#806b43]/90 transition-colors font-bold">
-                    Crafted by
-                  </span>
-                  <img
-                    loading="lazy"
-                    decoding="async"
-                    src={data.assets.logo}
-                    alt="Graphikly"
-                    className="h-6 w-auto opacity-80"
-                  />
-                </div>
-                <a
-                  href="https://www.graphikly.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-sans text-[8px] tracking-[0.5em] text-[#806b43]/50 uppercase hover:tracking-[0.6em] transition-all duration-700 hover:text-[#806b43] font-bold"
-                >
-                  www.graphikly.com
-                </a>
+                <div className="h-px w-12 bg-[#806b43]/30" />
+                <p className="gld-script text-2xl sm:text-3xl text-[#806b43]/90">
+                  {data.footerLoveNote}
+                </p>
               </motion.div>
             </div>
 

@@ -15,9 +15,11 @@ export interface InvitationConfig {
   templateSlug: string;
   eventType: string;
   groomName: string;
+  groomFormalName: string;
   groomGuardianText: string;
   groomParents: string;
   brideName: string;
+  brideFormalName: string;
   brideGuardianText: string;
   brideParents: string;
   swapNames: boolean;
@@ -27,10 +29,14 @@ export interface InvitationConfig {
   venueAddress: string;
   primaryMapTitle: string;
   googleMapLink: string;
+  useSecondaryMap: boolean;
+  secondaryMapTitle: string;
+  secondaryMapVenueName: string;
+  secondaryMapAddress: string;
+  secondaryMapLink: string;
   inviteTitle: string;
   inviteParagraph: string;
   welcomeMessageArabic: string;
-  countdownTitle: string;
   revealTitle: string;
   preWeddingTitle: string;
   preWeddingEvents: PreWeddingEvent[];
@@ -40,6 +46,7 @@ export interface InvitationConfig {
   accommodation: string;
   giftMessage: string;
   closingMessage: string;
+  footerLoveNote: string;
   initialRsvpCount: number;
   musicUrl: string;
   assets: {
@@ -53,71 +60,76 @@ export interface InvitationConfig {
     flowerCorner2: string;
     flowerCorner3: string;
     whiteRose: string;
-    logo: string;
   };
 }
 
 export const INVITATION_DATA: InvitationConfig = {
   templateSlug: 'eternal-duas-couple',
-  eventType: 'Wedding',
-  groomName: 'Omar Farooq',
-  groomGuardianText: 'Son Of',
-  groomParents: 'Mr. Tariq Farooq & Mrs. Zainab Farooq',
-  brideName: 'Aisha Khan',
-  brideGuardianText: 'Daughter Of',
-  brideParents: 'Mr. Salman Khan & Mrs. Fatima Khan',
-  swapNames: true,
-  eventDate: '2027-01-15',
-  eventTime: '06:00 PM',
-  venueName: 'The Grand Pavilion',
-  venueAddress: 'Al Barsha District, Dubai, UAE',
-  primaryMapTitle: 'The Venue',
-  googleMapLink: 'https://maps.google.com',
+  eventType: 'Nikah Ceremony',
+  groomName: 'Shafi',
+  groomFormalName: 'Mohammed Shafi',
+  groomGuardianText: 'S/o',
+  groomParents: 'Mr. Md Sharfuddin & Mrs. Rahima Begum',
+  brideName: 'Sana',
+  brideFormalName: 'Sana',
+  brideGuardianText: 'D/o',
+  brideParents: 'Md Hameed Hussain & Mrs. Khairunnissa Begum',
+  swapNames: false,
+  eventDate: '2027-01-03',
+  eventTime: '02:00 PM',
+  venueName: 'Laxmi Bavani Gardens',
+  venueAddress: 'Nikah Venue',
+  primaryMapTitle: 'Nikah',
+  googleMapLink: 'https://maps.app.goo.gl/j4A3MVGMZiXPqxEs6',
+  useSecondaryMap: true,
+  secondaryMapTitle: 'Valima',
+  secondaryMapVenueName: 'Taj Convention',
+  secondaryMapAddress: 'Valima Venue',
+  secondaryMapLink: 'https://maps.app.goo.gl/wKhMJ5m6Hb6xCWoC6',
   inviteTitle: 'YOU ARE INVITED TO THE NIKKAH CEREMONY OF',
   inviteParagraph:
     'Together with our families, we joyfully invite you to witness the beginning of our forever.',
   welcomeMessageArabic: 'وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا',
-  countdownTitle: 'Counting down to our Nikah',
   revealTitle: 'The Nikah Date',
   preWeddingTitle: 'Pre-Wedding Events',
   preWeddingEvents: [
     {
       title: 'Engagement Ring Ceremony',
-      date: '2026-11-15',
-      time: '05:00 PM',
-      venue: 'The Grand Pavilion',
+      date: '2026-10-24',
+      time: '01:00 PM',
+      venue: '',
       message: 'Exchange of rings and blessings.',
     },
     {
       title: 'Mehndi Ceremony',
-      date: '2026-12-15',
+      date: '2027-01-02',
       time: '04:00 PM',
-      venue: 'Family Residence',
+      venue: '',
       message: 'Ladies are requested to wear traditional attire.',
     },
     {
       title: 'Haldi & Ubtan',
-      date: '2026-12-15',
+      date: '2027-01-02',
       time: '06:00 PM',
-      venue: 'Family Residence',
+      venue: '',
       message: 'A traditional haldi ceremony.',
     },
     {
       title: 'Sangeet Night',
-      date: '2026-12-15',
+      date: '2027-01-02',
       time: '08:00 PM',
-      venue: 'The Royal Ballroom',
-      message: 'Join us for a night of music and dance.',
+      venue: '',
+      message: 'Join us for a night of music and celebration.',
     },
   ],
   programTimeline: [
-    { time: '04:30 PM', event: 'Welcome Drink' },
-    { time: '05:00 PM', event: 'Photo Shoot' },
-    { time: '05:30 PM', event: 'Baraat Procession' },
-    { time: '06:30 PM', event: 'Nikah Ceremony' },
-    { time: '07:30 PM', event: 'Dua & Blessings' },
-    { time: '08:00 PM', event: 'Wedding Feast' },
-    { time: '10:00 PM', event: 'Rukhsati' },
+    { time: '11:00 AM', event: 'Welcome' },
+    { time: '12:00 PM', event: 'Photo Shoot' },
+    { time: '01:00 PM', event: 'Baraat' },
+    { time: '02:00 PM', event: 'Nikah' },
+    { time: '03:00 PM', event: 'Dua & Blessings' },
+    { time: '04:00 PM', event: 'Wedding Feast' },
+    { time: '05:00 PM', event: 'Rukhsati' },
   ],
   dressCode:
     'Formal / Traditional attire is encouraged. Ladies are invited to wear pastels or earth tones.',
@@ -128,6 +140,7 @@ export const INVITATION_DATA: InvitationConfig = {
   giftMessage:
     'Your duas and presence are the greatest gifts. Should you wish to honor us, a contribution to our new home would be cherished.',
   closingMessage: 'JazakAllah Khair — May Allah bless this union.',
+  footerLoveNote: 'With love, Shafi & Sana',
   initialRsvpCount: 12,
   musicUrl: '/audio/eternal-duas-song.mp3',
   assets: {
@@ -141,7 +154,6 @@ export const INVITATION_DATA: InvitationConfig = {
     flowerCorner2: '/images/invitation/eternal-duas/golden-flower-corner-2.webp',
     flowerCorner3: '/images/invitation/eternal-duas/golden-flower-corner-3.webp',
     whiteRose: '/images/invitation/eternal-duas/golden-white-rose.webp',
-    logo: '/logo.png',
   },
 };
 
@@ -158,7 +170,7 @@ export function formatDisplayDate(dateStr: string): string {
 export function getCalendarParts(dateStr: string) {
   const parts = dateStr.split('-').map((n) => parseInt(n, 10));
   if (parts.length !== 3 || parts.some(isNaN)) {
-    return { weekday: 'Friday', day: '15', monthYear: 'January 2027', year: '2027' };
+    return { weekday: 'Sunday', day: '03', monthYear: 'January 2027', year: '2027' };
   }
   const date = new Date(parts[0], parts[1] - 1, parts[2], 12, 0, 0);
   return {

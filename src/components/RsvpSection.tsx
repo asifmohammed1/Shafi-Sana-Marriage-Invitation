@@ -6,8 +6,6 @@ import { INVITATION_DATA, formatDisplayDate, type PreWeddingEvent } from '../dat
 interface RsvpRecord {
   id: string;
   name: string;
-  phone: string;
-  email: string;
   adultsCount: number;
   childrenCount: number;
   attendance: 'joyfully accept' | 'regretfully decline';
@@ -21,23 +19,25 @@ interface RsvpSectionProps {
   mainEventDate: string;
   mainEventTime: string;
   mainEventVenue: string;
+  secondaryEventTitle?: string;
+  secondaryEventVenue?: string;
   preWeddingEvents: PreWeddingEvent[];
   initialCount: number;
 }
 
-const STORAGE_KEY = 'eternal_duas_rsvps_v1';
+const STORAGE_KEY = 'eternal_duas_shafi_sana_rsvps_v1';
 
 export const RsvpSection: React.FC<RsvpSectionProps> = ({
   mainEventTitle,
   mainEventDate,
   mainEventTime,
   mainEventVenue,
+  secondaryEventTitle,
+  secondaryEventVenue,
   preWeddingEvents,
   initialCount,
 }) => {
   const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
   const [adultsCount, setAdultsCount] = useState(1);
   const [childrenCount, setChildrenCount] = useState(0);
   const [attendingEvents, setAttendingEvents] = useState<string[]>([mainEventTitle]);
@@ -70,6 +70,16 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({
         time: mainEventTime,
         venue: mainEventVenue,
       },
+      ...(secondaryEventTitle
+        ? [
+            {
+              title: secondaryEventTitle,
+              date: '',
+              time: '',
+              venue: secondaryEventVenue || '',
+            },
+          ]
+        : []),
       ...preWeddingEvents.map((e) => ({
         title: e.title,
         date: e.date,
@@ -79,11 +89,20 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({
     ];
 
     return list.sort((a, b) => {
+      if (!a.date || !b.date) return 0;
       const ta = new Date(`${a.date}T12:00:00`).getTime();
       const tb = new Date(`${b.date}T12:00:00`).getTime();
       return ta - tb;
     });
-  }, [mainEventTitle, mainEventDate, mainEventTime, mainEventVenue, preWeddingEvents]);
+  }, [
+    mainEventTitle,
+    mainEventDate,
+    mainEventTime,
+    mainEventVenue,
+    secondaryEventTitle,
+    secondaryEventVenue,
+    preWeddingEvents,
+  ]);
 
   const toggleEvent = (title: string) => {
     const exists = attendingEvents.includes(title);
@@ -106,15 +125,13 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !phone.trim()) return;
+    if (!name.trim()) return;
 
     setSubmitting(true);
     window.setTimeout(() => {
       const record: RsvpRecord = {
         id: `${Date.now()}`,
         name: name.trim(),
-        phone: phone.trim(),
-        email: email.trim(),
         adultsCount: attendance === 'regretfully decline' ? 0 : adultsCount,
         childrenCount: attendance === 'regretfully decline' ? 0 : childrenCount,
         attendance,
@@ -143,8 +160,6 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({
   const resetForm = () => {
     setSubmittedRecord(null);
     setName('');
-    setPhone('');
-    setEmail('');
     setAdultsCount(1);
     setChildrenCount(0);
     setAttendingEvents([mainEventTitle]);
@@ -229,41 +244,6 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({
               />
             </div>
 
-            <div className="space-y-1 w-full text-left">
-              <label
-                htmlFor="rsvp-phone"
-                className="text-[11px] uppercase tracking-widest text-[#806b43] font-semibold opacity-80 pl-1"
-              >
-                Phone Number *
-              </label>
-              <input
-                id="rsvp-phone"
-                type="tel"
-                placeholder="Enter your phone number"
-                required
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="w-full bg-transparent border-b border-[#806b43]/30 py-2.5 px-2 text-sm text-[#806b43] placeholder-[#806b43]/40 focus:outline-none focus:border-[#806b43]"
-              />
-            </div>
-
-            <div className="space-y-1 w-full text-left">
-              <label
-                htmlFor="rsvp-email"
-                className="text-[11px] uppercase tracking-widest text-[#806b43] font-semibold opacity-80 pl-1"
-              >
-                Email Address (Optional)
-              </label>
-              <input
-                id="rsvp-email"
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-transparent border-b border-[#806b43]/30 py-2.5 px-2 text-sm text-[#806b43] placeholder-[#806b43]/40 focus:outline-none focus:border-[#806b43]"
-              />
-            </div>
-
             <div className="grid grid-cols-2 gap-4 pt-1">
               <div className="space-y-1 w-full text-left">
                 <label
@@ -337,18 +317,26 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({
                     </span>
                     <div className="flex flex-col flex-1 min-w-0">
                       <span className="text-sm font-bold text-[#806b43]">{ev.title}</span>
-                      <div className="mt-1 space-y-1 text-[11px] text-[#806b43]/75">
-                        <div className="flex items-center gap-1.5">
-                          <Calendar className="w-3 h-3 shrink-0" />
-                          <span>
-                            {formatDisplayDate(ev.date)} at {ev.time}
-                          </span>
+                      {(ev.date || ev.time || ev.venue) && (
+                        <div className="mt-1 space-y-1 text-[11px] text-[#806b43]/75">
+                          {(ev.date || ev.time) && (
+                            <div className="flex items-center gap-1.5">
+                              <Calendar className="w-3 h-3 shrink-0" />
+                              <span>
+                                {ev.date ? formatDisplayDate(ev.date) : ''}
+                                {ev.date && ev.time ? ' at ' : ''}
+                                {ev.time}
+                              </span>
+                            </div>
+                          )}
+                          {ev.venue && (
+                            <div className="flex items-center gap-1.5">
+                              <MapPin className="w-3 h-3 shrink-0" />
+                              <span className="truncate">{ev.venue}</span>
+                            </div>
+                          )}
                         </div>
-                        <div className="flex items-center gap-1.5">
-                          <MapPin className="w-3 h-3 shrink-0" />
-                          <span className="truncate">{ev.venue}</span>
-                        </div>
-                      </div>
+                      )}
                     </div>
                   </label>
                 );
@@ -397,7 +385,7 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({
             <textarea
               id="rsvp-notes"
               rows={2}
-              placeholder="Write a prayer or message for Aisha & Omar..."
+              placeholder="Write a prayer or message for Shafi & Sana..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               className="w-full bg-transparent border-b border-[#806b43]/30 py-2 px-2 text-sm text-[#806b43] placeholder-[#806b43]/40 focus:outline-none focus:border-[#806b43] resize-none"
