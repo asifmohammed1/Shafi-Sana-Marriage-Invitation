@@ -40,8 +40,9 @@ export const EnvelopeUnboxing: React.FC<EnvelopeUnboxingProps> = ({
 
   useEffect(() => {
     if (unboxState === 'opening' && videoRef.current) {
+      videoRef.current.muted = false;
       videoRef.current.play().catch(() => {
-        // Fallback if browser blocks unmuted video playback
+        // Fallback only if browser strictly blocks unmuted video playback
         if (videoRef.current) {
           videoRef.current.muted = true;
           videoRef.current.play().catch(() => {
@@ -57,6 +58,16 @@ export const EnvelopeUnboxing: React.FC<EnvelopeUnboxingProps> = ({
     onStart();
     if (typeof navigator !== 'undefined' && navigator.vibrate) {
       navigator.vibrate(50);
+    }
+    const video = videoRef.current;
+    if (video) {
+      video.muted = false;
+      video.play().catch(() => {
+        video.muted = true;
+        video.play().catch(() => {
+          window.setTimeout(finishUnbox, 800);
+        });
+      });
     }
     setUnboxState('opening');
   };
@@ -80,7 +91,6 @@ export const EnvelopeUnboxing: React.FC<EnvelopeUnboxingProps> = ({
             className="w-full h-full object-cover pointer-events-none"
             src={`${envelopeVideoUrl}#t=0.001`}
             playsInline
-            muted
             preload="auto"
             onTimeUpdate={() => {
               const v = videoRef.current;

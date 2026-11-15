@@ -21,26 +21,23 @@ export function useAmbientAudio({
   const primedRef = useRef(false);
 
   const primeAudio = useCallback(() => {
-    if (!useMusic) return;
+    if (!useMusic || primedRef.current) return;
     const el = audioRef.current;
     if (!el) return;
 
-    userPausedRef.current = false;
-    el.muted = false;
-    el.volume = 0.85;
-
-    if (!primedRef.current) {
-      primedRef.current = true;
-      const playPromise = el.play();
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            setIsMuted(false);
-          })
-          .catch(() => {
-            primedRef.current = false;
-          });
-      }
+    el.muted = true;
+    const playPromise = el.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          primedRef.current = true;
+          el.pause();
+          el.currentTime = 0;
+          el.muted = false;
+        })
+        .catch(() => {
+          el.muted = false;
+        });
     }
   }, [useMusic]);
 
@@ -51,9 +48,11 @@ export function useAmbientAudio({
     userPausedRef.current = false;
     el.muted = false;
     el.volume = 0.85;
-    el.play()
-      .then(() => setIsMuted(false))
-      .catch(() => undefined);
+    window.setTimeout(() => {
+      el.play()
+        .then(() => setIsMuted(false))
+        .catch(() => undefined);
+    }, 150);
   }, [useMusic]);
 
   const pauseMusic = useCallback(() => {
