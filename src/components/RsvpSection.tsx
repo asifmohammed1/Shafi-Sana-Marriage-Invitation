@@ -167,20 +167,56 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({
     };
 
     let savedRecord = payload;
+    let sheetUpdated = false;
     try {
       const res = await fetch('/api/rsvp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      if (res.ok) {
+      const contentType = res.headers.get('content-type') || '';
+      if (res.ok && contentType.includes('application/json')) {
         const json = await res.json();
         if (json?.rsvp) {
           savedRecord = json.rsvp as RsvpRecord;
+          sheetUpdated = Boolean(json.rsvp.sheetForwarded);
         }
       }
     } catch {
-      // Keep local persistence fallback
+      // No backend server available (e.g. static hosting on Netlify)
+    }
+
+    if (!sheetUpdated && INVITATION_DATA.sheetWebhookUrl) {
+      try {
+        const totalMembers = payload.adultsCount + payload.childrenCount;
+        const membersSummary =
+          payload.attendance === 'regretfully decline'
+            ? '0 (Unable to attend)'
+            : `${totalMembers} (Adults: ${payload.adultsCount}, Children: ${payload.childrenCount})`;
+        const eventsSummary =
+          payload.attendance === 'regretfully decline'
+            ? 'Unable to attend'
+            : payload.attendingEvents.join(', ') || 'None';
+
+        await fetch(INVITATION_DATA.sheetWebhookUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            timestamp: payload.submittedAt,
+            name: payload.name,
+            members: membersSummary,
+            adultsCount: payload.adultsCount,
+            childrenCount: payload.childrenCount,
+            totalMembers,
+            attendance: payload.attendance,
+            eventTypes: eventsSummary,
+            wishes: payload.notes,
+          }),
+        });
+      } catch {
+        // Ignore network error after local backup
+      }
     }
 
     const updatedList = [savedRecord, ...savedRsvps];

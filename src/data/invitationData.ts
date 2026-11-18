@@ -53,6 +53,7 @@ export interface InvitationConfig {
   footerLoveNote: string;
   initialRsvpCount: number;
   musicUrl: string;
+  sheetWebhookUrl: string;
   assets: {
     envelopeVideo: string;
     heroVideo: string;
@@ -129,6 +130,8 @@ export const INVITATION_DATA: InvitationConfig = {
   footerLoveNote: 'With love, Shafi & Sana',
   initialRsvpCount: 12,
   musicUrl: '/audio/eternal-duas-song.mp3',
+  sheetWebhookUrl:
+    'https://script.google.com/macros/s/AKfycbzhM3-VOqbgWsPDSSN_MWm6yvWBql_alcnztJ5NgANJm1PK7PF1EYhQsJ2IWfim6KQ/exec',
   assets: {
     envelopeVideo: '/unbox-assets/golden-light-envelope/EnvelopeOpeningWithGoldenLight.mp4',
     heroVideo: '/images/invitation/eternal-duas/CoupleHeroStyleBackgroundVideo.mp4',
