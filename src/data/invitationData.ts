@@ -181,10 +181,10 @@ export function getTimelineImage(eventTitle: string): string {
     lower.includes('mocktail') ||
     lower.includes('cocktail')
   ) {
-    return '/images/invitation/eternal-duas/drink.webp';
+    return '/images/invitation/events/welcome.png';
   }
   if (lower.includes('photo') || lower.includes('shoot') || lower.includes('portrait')) {
-    return '/images/invitation/eternal-duas/photo.webp';
+    return '/images/invitation/events/photoshoot.png';
   }
   if (
     lower.includes('arrival') ||
@@ -192,7 +192,7 @@ export function getTimelineImage(eventTitle: string): string {
     lower.includes('entrance') ||
     lower.includes('barat')
   ) {
-    return '/images/invitation/eternal-duas/baraat.webp';
+    return '/images/invitation/events/baraat.png';
   }
   if (
     lower.includes('dinner') ||
@@ -211,10 +211,10 @@ export function getTimelineImage(eventTitle: string): string {
     lower.includes('bidai') ||
     lower.includes('valima')
   ) {
-    return '/images/invitation/eternal-duas/bidai.webp';
+    return '/images/invitation/events/rukhsati.png';
   }
   if (lower.includes('nikah') || lower.includes('nikkah')) {
-    return '/images/invitation/eternal-duas/nikah.webp';
+    return '/images/invitation/events/nikah.png';
   }
   if (
     lower.includes('dua') ||
@@ -222,7 +222,7 @@ export function getTimelineImage(eventTitle: string): string {
     lower.includes('blessing') ||
     lower.includes('ceremony')
   ) {
-    return '/images/invitation/eternal-duas/dua-blessings.webp';
+    return '/images/invitation/events/dua.png';
   }
   return '/images/invitation/eternal-duas/calendar.webp';
 }

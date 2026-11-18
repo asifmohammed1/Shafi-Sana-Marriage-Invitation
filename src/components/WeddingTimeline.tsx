@@ -78,7 +78,7 @@ export const WeddingTimeline: React.FC<WeddingTimelineProps> = ({
                   <img
                     src={imgSrc}
                     alt={item.event}
-                    className="w-[175px] h-[175px] sm:w-[190px] sm:h-[190px] md:w-[205px] md:h-[205px] object-contain opacity-95 drop-shadow-sm mix-blend-multiply"
+                    className="w-[175px] h-[175px] sm:w-[190px] sm:h-[190px] md:w-[205px] md:h-[205px] object-contain opacity-100 drop-shadow-sm"
                   />
                 ) : (
                   <>
@@ -113,7 +113,7 @@ export const WeddingTimeline: React.FC<WeddingTimelineProps> = ({
                   <img
                     src={imgSrc}
                     alt={item.event}
-                    className="w-[175px] h-[175px] sm:w-[190px] sm:h-[190px] md:w-[205px] md:h-[205px] object-contain opacity-95 drop-shadow-sm mix-blend-multiply"
+                    className="w-[175px] h-[175px] sm:w-[190px] sm:h-[190px] md:w-[205px] md:h-[205px] object-contain opacity-100 drop-shadow-sm"
                   />
                 )}
               </motion.div>
