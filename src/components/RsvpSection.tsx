@@ -20,12 +20,14 @@ interface RsvpSectionProps {
   mainEventTime: string;
   mainEventVenue: string;
   secondaryEventTitle?: string;
+  secondaryEventDate?: string;
+  secondaryEventTime?: string;
   secondaryEventVenue?: string;
   preWeddingEvents: PreWeddingEvent[];
   initialCount: number;
 }
 
-const STORAGE_KEY = 'eternal_duas_shafi_sana_rsvps_v1';
+const STORAGE_KEY = 'shafi_sana_nikah_rsvps_v1';
 
 export const RsvpSection: React.FC<RsvpSectionProps> = ({
   mainEventTitle,
@@ -33,14 +35,17 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({
   mainEventTime,
   mainEventVenue,
   secondaryEventTitle,
+  secondaryEventDate,
+  secondaryEventTime,
   secondaryEventVenue,
   preWeddingEvents,
   initialCount,
 }) => {
+  const defaultSelectedEvents = secondaryEventTitle ? [secondaryEventTitle] : [mainEventTitle];
   const [name, setName] = useState('');
   const [adultsCount, setAdultsCount] = useState(1);
   const [childrenCount, setChildrenCount] = useState(0);
-  const [attendingEvents, setAttendingEvents] = useState<string[]>([mainEventTitle]);
+  const [attendingEvents, setAttendingEvents] = useState<string[]>(defaultSelectedEvents);
   const [attendance, setAttendance] = useState<'joyfully accept' | 'regretfully decline'>(
     'joyfully accept'
   );
@@ -51,15 +56,31 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({
   const [showGuestList, setShowGuestList] = useState(false);
 
   useEffect(() => {
+    let active = true;
     try {
       const raw = window.localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw) as RsvpRecord[];
-        if (Array.isArray(parsed)) setSavedRsvps(parsed);
+        if (Array.isArray(parsed) && active) setSavedRsvps(parsed);
       }
     } catch {
       // Ignore storage error
     }
+
+    fetch('/api/rsvps')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (active && data && Array.isArray(data.rsvps) && data.rsvps.length > 0) {
+          setSavedRsvps(data.rsvps as RsvpRecord[]);
+        }
+      })
+      .catch(() => {
+        // Fallback silently to localStorage if API unavailable
+      });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   const allEvents = useMemo(() => {
@@ -74,8 +95,8 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({
         ? [
             {
               title: secondaryEventTitle,
-              date: '',
-              time: '',
+              date: secondaryEventDate || '',
+              time: secondaryEventTime || '',
               venue: secondaryEventVenue || '',
             },
           ]
@@ -100,6 +121,8 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({
     mainEventTime,
     mainEventVenue,
     secondaryEventTitle,
+    secondaryEventDate,
+    secondaryEventTime,
     secondaryEventVenue,
     preWeddingEvents,
   ]);
@@ -119,42 +142,57 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({
       setAttendingEvents([]);
     } else {
       setAttendance('joyfully accept');
-      setAttendingEvents([mainEventTitle]);
+      setAttendingEvents(defaultSelectedEvents);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
 
     setSubmitting(true);
-    window.setTimeout(() => {
-      const record: RsvpRecord = {
-        id: `${Date.now()}`,
-        name: name.trim(),
-        adultsCount: attendance === 'regretfully decline' ? 0 : adultsCount,
-        childrenCount: attendance === 'regretfully decline' ? 0 : childrenCount,
-        attendance,
-        attendingEvents: attendance === 'regretfully decline' ? [] : attendingEvents,
-        notes: notes.trim(),
-        submittedAt: new Date().toLocaleDateString('en-US', {
-          month: 'short',
-          day: 'numeric',
-          year: 'numeric',
-        }),
-      };
+    const payload: RsvpRecord = {
+      id: `${Date.now()}`,
+      name: name.trim(),
+      adultsCount: attendance === 'regretfully decline' ? 0 : adultsCount,
+      childrenCount: attendance === 'regretfully decline' ? 0 : childrenCount,
+      attendance,
+      attendingEvents: attendance === 'regretfully decline' ? [] : attendingEvents,
+      notes: notes.trim(),
+      submittedAt: new Date().toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      }),
+    };
 
-      const updatedList = [record, ...savedRsvps];
-      setSavedRsvps(updatedList);
-      try {
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedList));
-      } catch {
-        // Ignore storage error
+    let savedRecord = payload;
+    try {
+      const res = await fetch('/api/rsvp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json?.rsvp) {
+          savedRecord = json.rsvp as RsvpRecord;
+        }
       }
+    } catch {
+      // Keep local persistence fallback
+    }
 
-      setSubmittedRecord(record);
-      setSubmitting(false);
-    }, 550);
+    const updatedList = [savedRecord, ...savedRsvps];
+    setSavedRsvps(updatedList);
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedList));
+    } catch {
+      // Ignore storage error
+    }
+
+    setSubmittedRecord(savedRecord);
+    setSubmitting(false);
   };
 
   const resetForm = () => {
@@ -162,7 +200,7 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({
     setName('');
     setAdultsCount(1);
     setChildrenCount(0);
-    setAttendingEvents([mainEventTitle]);
+    setAttendingEvents(defaultSelectedEvents);
     setAttendance('joyfully accept');
     setNotes('');
   };
@@ -197,7 +235,7 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({
           </h3>
           <p className="text-sm text-[#806b43]/85 mb-4">
             Thank you, <span className="font-semibold">{submittedRecord.name}</span>. Your response
-            has been saved.
+            has been recorded.
           </p>
           <div className="w-full border-t border-[#806b43]/20 pt-4 text-xs text-[#806b43]/80 space-y-1.5">
             <p className="gld-cinzel uppercase tracking-wider font-semibold">
@@ -324,7 +362,7 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({
                               <Calendar className="w-3 h-3 shrink-0" />
                               <span>
                                 {ev.date ? formatDisplayDate(ev.date) : ''}
-                                {ev.date && ev.time ? ' at ' : ''}
+                                {ev.date && ev.time ? ' · ' : ''}
                                 {ev.time}
                               </span>
                             </div>
@@ -402,7 +440,7 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({
         </form>
       )}
 
-      {/* Saved Guest Responses Ledger */}
+      {/* Guest Responses Drawer */}
       {savedRsvps.length > 0 && (
         <div className="w-full mt-8 pt-6 border-t border-[#806b43]/20">
           <button
@@ -412,7 +450,7 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({
           >
             <span className="flex items-center gap-2">
               <Users className="w-3.5 h-3.5" />
-              <span>Your Saved Responses ({savedRsvps.length})</span>
+              <span>Guest Responses ({savedRsvps.length})</span>
             </span>
             {showGuestList ? (
               <ChevronUp className="w-4 h-4" />

@@ -14,7 +14,6 @@ import { INVITATION_DATA, getCalendarParts } from './data/invitationData';
 import { useAmbientAudio } from './components/AmbientAudio';
 import { EnvelopeUnboxing } from './components/EnvelopeUnboxing';
 import { HeartScratchCard } from './components/HeartScratchCard';
-import { PreWeddingTimeline } from './components/PreWeddingTimeline';
 import { WeddingTimeline } from './components/WeddingTimeline';
 import { RsvpSection } from './components/RsvpSection';
 
@@ -129,7 +128,7 @@ export default function App() {
 
           {/* 1. Hero Section */}
           <section
-            id="eternal-duas-main"
+            id="nikah-invitation-main"
             style={{ colorScheme: 'only light' }}
             className="relative z-50 w-full aspect-[9/16] flex flex-col items-center justify-start pt-24 bg-[#F9F0E0]"
           >
@@ -404,14 +403,8 @@ export default function App() {
             </motion.div>
           </SectionBlock>
 
-          {/* 6 & 7. Pre-Wedding Events + Wedding Timeline */}
+          {/* 6. Wedding Events */}
           <SectionBlock>
-            <PreWeddingTimeline
-              title={data.preWeddingTitle}
-              events={data.preWeddingEvents}
-              dividerSrc={data.assets.divider}
-              roseSrc={data.assets.whiteRose}
-            />
             <WeddingTimeline
               items={data.programTimeline}
               dividerSrc={data.assets.divider}
@@ -439,11 +432,14 @@ export default function App() {
               </div>
 
               <div className="mb-8 flex flex-col items-center">
-                <h3 className="gld-cinzel font-bold text-2xl md:text-3xl tracking-widest text-[#806b43] mb-2">
+                <h3 className="gld-cinzel font-bold text-2xl md:text-3xl tracking-widest text-[#806b43] mb-1">
                   {data.venueName}
                 </h3>
+                <p className="gld-cinzel text-xs uppercase tracking-[0.2em] text-[#806b43]/75 mb-2">
+                  {data.venueAddress}
+                </p>
                 <p className="font-sans text-xs md:text-sm text-[#806b43]/80 tracking-wide">
-                  Sunday, 03 Jan 2027 · 02:00 PM
+                  Sunday, 03 Jan 2027 · {data.eventTime}
                 </p>
               </div>
 
@@ -451,12 +447,12 @@ export default function App() {
                 <div className="w-full aspect-[4/3] rounded-[24px] border-[2px] border-[#806b43]/50 overflow-hidden relative z-10 shadow-sm bg-[#F9F0E0]">
                   <iframe
                     src={`https://maps.google.com/maps?q=${encodeURIComponent(
-                      data.venueName
-                    )}&t=&z=14&ie=UTF8&iwloc=&output=embed`}
+                      data.venueCoords
+                    )}&ll=${encodeURIComponent(data.venueCoords)}&t=k&z=18&ie=UTF8&output=embed`}
                     style={{ border: 0 }}
                     allowFullScreen
                     loading="lazy"
-                    title="Nikah Venue Map Preview"
+                    title="Nikah Venue Satellite Map Preview"
                     className="w-full h-full"
                   />
                 </div>
@@ -505,21 +501,27 @@ export default function App() {
                 </div>
 
                 <div className="mb-8 flex flex-col items-center">
-                  <h3 className="gld-cinzel font-bold text-2xl md:text-3xl tracking-widest text-[#806b43] mb-2">
+                  <h3 className="gld-cinzel font-bold text-2xl md:text-3xl tracking-widest text-[#806b43] mb-1">
                     {data.secondaryMapVenueName}
                   </h3>
+                  <p className="gld-cinzel text-xs uppercase tracking-[0.2em] text-[#806b43]/75 mb-2">
+                    {data.secondaryMapAddress}
+                  </p>
+                  <p className="font-sans text-xs md:text-sm text-[#806b43]/80 tracking-wide">
+                    Monday, 04 Jan 2027 · {data.secondaryEventTime}
+                  </p>
                 </div>
 
                 <div className="w-full max-w-[90%] md:max-w-md relative mb-12">
                   <div className="w-full aspect-[4/3] rounded-[24px] border-[2px] border-[#806b43]/50 overflow-hidden relative z-10 shadow-sm bg-[#F9F0E0]">
                     <iframe
                       src={`https://maps.google.com/maps?q=${encodeURIComponent(
-                        data.secondaryMapVenueName
-                      )}&t=&z=14&ie=UTF8&iwloc=&output=embed`}
+                        data.secondaryVenueCoords
+                      )}&ll=${encodeURIComponent(data.secondaryVenueCoords)}&t=k&z=18&ie=UTF8&output=embed`}
                       style={{ border: 0 }}
                       allowFullScreen
                       loading="lazy"
-                      title="Valima Venue Map Preview"
+                      title="Valima Venue Satellite Map Preview"
                       className="w-full h-full"
                     />
                   </div>
@@ -621,6 +623,8 @@ export default function App() {
               mainEventTime={data.eventTime}
               mainEventVenue={data.venueName}
               secondaryEventTitle={data.secondaryMapTitle}
+              secondaryEventDate={data.secondaryEventDate}
+              secondaryEventTime={data.secondaryEventTime}
               secondaryEventVenue={data.secondaryMapVenueName}
               preWeddingEvents={data.preWeddingEvents}
               initialCount={data.initialRsvpCount}

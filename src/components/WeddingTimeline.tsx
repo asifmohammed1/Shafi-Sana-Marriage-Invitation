@@ -23,10 +23,10 @@ export const WeddingTimeline: React.FC<WeddingTimelineProps> = ({
   return (
     <div
       ref={containerRef}
-      className="flex flex-col items-center w-full max-w-[400px] mx-auto mb-12"
+      className="flex flex-col items-center w-full max-w-[440px] mx-auto mb-12"
     >
       <h2 className="gld-script text-[40px] md:text-[46px] text-center text-[#806b43] mb-1">
-        Wedding Timeline
+        Wedding Events
       </h2>
       <div className="flex justify-center mb-12 w-full">
         <img
@@ -59,7 +59,7 @@ export const WeddingTimeline: React.FC<WeddingTimelineProps> = ({
           return (
             <div
               key={`${item.time}-${item.event}`}
-              className="relative flex w-full items-center justify-between min-h-[120px] mb-6 z-10"
+              className="relative flex w-full items-center justify-between min-h-[160px] mb-6 z-10"
             >
               {/* Center Diamond */}
               <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center bg-[#F9F0E0] p-1 z-10">
@@ -72,13 +72,13 @@ export const WeddingTimeline: React.FC<WeddingTimelineProps> = ({
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: '-20% 0px -20% 0px' }}
                 transition={{ duration: 0.8 }}
-                className="w-1/2 flex flex-col items-center pr-2 md:pr-4 text-center"
+                className="w-1/2 flex flex-col items-center pr-1 md:pr-2 text-center"
               >
                 {isEven ? (
                   <img
                     src={imgSrc}
                     alt={item.event}
-                    className="w-[140px] h-[140px] md:w-[160px] md:h-[160px] object-contain opacity-90 drop-shadow-sm mix-blend-multiply"
+                    className="w-[175px] h-[175px] sm:w-[190px] sm:h-[190px] md:w-[205px] md:h-[205px] object-contain opacity-95 drop-shadow-sm mix-blend-multiply"
                   />
                 ) : (
                   <>
@@ -98,7 +98,7 @@ export const WeddingTimeline: React.FC<WeddingTimelineProps> = ({
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: '-20% 0px -20% 0px' }}
                 transition={{ duration: 0.8 }}
-                className="w-1/2 flex flex-col items-center pl-2 md:pl-4 text-center"
+                className="w-1/2 flex flex-col items-center pl-1 md:pl-2 text-center"
               >
                 {isEven ? (
                   <>
@@ -113,7 +113,7 @@ export const WeddingTimeline: React.FC<WeddingTimelineProps> = ({
                   <img
                     src={imgSrc}
                     alt={item.event}
-                    className="w-[140px] h-[140px] md:w-[160px] md:h-[160px] object-contain opacity-90 drop-shadow-sm mix-blend-multiply"
+                    className="w-[175px] h-[175px] sm:w-[190px] sm:h-[190px] md:w-[205px] md:h-[205px] object-contain opacity-95 drop-shadow-sm mix-blend-multiply"
                   />
                 )}
               </motion.div>

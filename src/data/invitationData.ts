@@ -27,12 +27,16 @@ export interface InvitationConfig {
   eventTime: string;
   venueName: string;
   venueAddress: string;
+  venueCoords: string;
   primaryMapTitle: string;
   googleMapLink: string;
   useSecondaryMap: boolean;
   secondaryMapTitle: string;
   secondaryMapVenueName: string;
   secondaryMapAddress: string;
+  secondaryVenueCoords: string;
+  secondaryEventDate: string;
+  secondaryEventTime: string;
   secondaryMapLink: string;
   inviteTitle: string;
   inviteParagraph: string;
@@ -64,7 +68,7 @@ export interface InvitationConfig {
 }
 
 export const INVITATION_DATA: InvitationConfig = {
-  templateSlug: 'eternal-duas-couple',
+  templateSlug: 'shafi-sana-nikah',
   eventType: 'Nikah Ceremony',
   groomName: 'Shafi',
   groomFormalName: 'Mohammed Shafi',
@@ -76,16 +80,20 @@ export const INVITATION_DATA: InvitationConfig = {
   brideParents: 'Md Hameed Hussain & Mrs. Khairunnissa Begum',
   swapNames: false,
   eventDate: '2027-01-03',
-  eventTime: '02:00 PM',
+  eventTime: 'After Zuhar',
   venueName: 'Laxmi Bavani Gardens',
-  venueAddress: 'Nikah Venue',
+  venueAddress: 'Burudagudem',
+  venueCoords: '18.9846095,79.4598985',
   primaryMapTitle: 'Nikah',
-  googleMapLink: 'https://maps.app.goo.gl/j4A3MVGMZiXPqxEs6',
+  googleMapLink: 'https://maps.app.goo.gl/8nicsJzbCn4Mm4HG8',
   useSecondaryMap: true,
   secondaryMapTitle: 'Valima',
   secondaryMapVenueName: 'Taj Convention',
-  secondaryMapAddress: 'Valima Venue',
-  secondaryMapLink: 'https://maps.app.goo.gl/wKhMJ5m6Hb6xCWoC6',
+  secondaryMapAddress: 'Kazipet',
+  secondaryVenueCoords: '17.9758247,79.5033822',
+  secondaryEventDate: '2027-01-04',
+  secondaryEventTime: 'After Maghrib',
+  secondaryMapLink: 'https://maps.app.goo.gl/bS8fkLdHQDowmVVd6',
   inviteTitle: 'YOU ARE INVITED TO THE NIKKAH CEREMONY OF',
   inviteParagraph:
     'Together with our families, we joyfully invite you to witness the beginning of our forever.',
@@ -94,32 +102,11 @@ export const INVITATION_DATA: InvitationConfig = {
   preWeddingTitle: 'Pre-Wedding Events',
   preWeddingEvents: [
     {
-      title: 'Engagement Ring Ceremony',
-      date: '2026-10-24',
-      time: '01:00 PM',
-      venue: '',
-      message: 'Exchange of rings and blessings.',
-    },
-    {
-      title: 'Mehndi Ceremony',
+      title: 'Mehndi & Haldi',
       date: '2027-01-02',
       time: '04:00 PM',
       venue: '',
-      message: 'Ladies are requested to wear traditional attire.',
-    },
-    {
-      title: 'Haldi & Ubtan',
-      date: '2027-01-02',
-      time: '06:00 PM',
-      venue: '',
-      message: 'A traditional haldi ceremony.',
-    },
-    {
-      title: 'Sangeet Night',
-      date: '2027-01-02',
-      time: '08:00 PM',
-      venue: '',
-      message: 'Join us for a night of music and celebration.',
+      message: 'Traditional Mehndi and Haldi celebrations.',
     },
   ],
   programTimeline: [
@@ -128,7 +115,6 @@ export const INVITATION_DATA: InvitationConfig = {
     { time: '01:00 PM', event: 'Baraat' },
     { time: '02:00 PM', event: 'Nikah' },
     { time: '03:00 PM', event: 'Dua & Blessings' },
-    { time: '04:00 PM', event: 'Wedding Feast' },
     { time: '05:00 PM', event: 'Rukhsati' },
   ],
   dressCode:
@@ -136,7 +122,7 @@ export const INVITATION_DATA: InvitationConfig = {
   transportation:
     'Complimentary shuttle services will be provided from the hotel to the venue every 30 minutes.',
   accommodation:
-    'A block of rooms has been reserved for our guests. Please mention our names for a special rate.',
+    'A block of rooms has been reserved for our guests.',
   giftMessage:
     'Your duas and presence are the greatest gifts. Should you wish to honor us, a contribution to our new home would be cherished.',
   closingMessage: 'JazakAllah Khair — May Allah bless this union.',
